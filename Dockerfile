@@ -4,5 +4,7 @@ RUN mkdir -p /opt/calc
 
 WORKDIR /opt/calc
 
-COPY requires ./
+COPY .coveragerc .pylintrc pyproject.toml pytest.ini requires ./
+COPY app ./app
+COPY test ./test
 RUN pip install -r requires

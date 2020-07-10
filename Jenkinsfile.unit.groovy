@@ -1,13 +1,19 @@
-node('agent01') {
-    stage('Source') {
-        git 'https://github.com/srayuso/unir-test.git'
+pipeline {
+    agent {
+        label 'python'
     }
-    stage('Build') {
-        echo 'Building stage!'
-        sh 'make build'
-    }
-    stage('Unit tests') {
-        sh 'make test-unit'
-        archiveArtifacts artifacts: 'results/unit-result.xml, results/coverage.xml'
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building stage!'
+                sh 'make build'
+            }
+        }
+        stage('Unit tests') {
+            steps {
+                sh 'make test-unit'
+                archiveArtifacts artifacts: 'results/unit-result.xml, results/coverage.xml'
+            }
+        }
     }
 }

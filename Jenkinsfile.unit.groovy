@@ -17,7 +17,7 @@ pipeline {
         }
     }
     post {
-        success {
+        always {
             junit 'results/*_result.xml'
         }
     }

@@ -12,8 +12,11 @@ pipeline {
         stage('Unit tests') {
             steps {
                 sh 'make test-unit'
-                archiveArtifacts artifacts: 'results/unit-result.xml, results/coverage.xml'
+                archiveArtifacts artifacts: 'results/*.xml'
             }
         }
+    }
+    post {
+        junit 'results/*-result.xml'
     }
 }

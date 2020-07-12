@@ -1,5 +1,3 @@
-JENKINS_AGENT_SECRET := 23d26b0920a09d45e01b599897e206334051dd267a27a9cbd42a07ba8e95b0e5
-
 .PHONY: all $(MAKECMDGOALS)
 
 build:
@@ -52,18 +50,10 @@ start-sonar-scanner:
 pylint:
 	docker run --rm --volume `pwd`:/opt/calc --env PYTHONPATH=/opt/calc -w /opt/calc calculator-app:latest pylint app/ | tee results/pylint_result.txt
 
-start-jenkins:
-	docker network create jenkins || true
-	docker run -d --rm --stop-timeout 60 --network jenkins --name jenkins-docker --privileged --network-alias docker  --env DOCKER_TLS_CERTDIR=/certs  --volume jenkins-docker-certs:/certs/client  --volume jenkins-data:/var/jenkins_home   -p 2376:2376 docker:dind
-	docker run -d --rm --stop-timeout 60 --network jenkins --name jenkins-server --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
-	sleep 30
-	docker run -d --rm --network jenkins --name jenkins-agent --init --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 --volume jenkins-docker-certs:/certs/client:ro --env JENKINS_URL=http://jenkins-server:8080 --env JENKINS_AGENT_NAME=agent01 --env JENKINS_SECRET=$(JENKINS_AGENT_SECRET) --env JENKINS_AGENT_WORKDIR=/home/jenkins/agent jenkins-agent
 
-stop-jenkins:
-	docker stop jenkins-agent || true
-	docker stop jenkins-docker || true
-	docker stop jenkins-server || true
-	docker network rm jenkins || true
-
-build-agent:
-	docker build -t jenkins-agent ./jenkins-agent
+deploy-stage:
+	docker stop apiserver || true
+	docker stop calc-web || true
+	docker build -t calc-web ./web
+	docker run -d --rm --name apiserver --network-alias apiserver --env PYTHONPATH=/opt/calc --env FLASK_APP=app/api.py -p 5000:5000 -w /opt/calc calculator-app:latest flask run --host=0.0.0.0
+	docker run -d --rm --name calc-web -p 80:80 calc-web

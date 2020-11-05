@@ -11,9 +11,15 @@ library(
 pipeline {
     agent any
     stages {
-        stage('Info') {
+        stage('Commit info') {
             steps {
                 jslInfo()
+            }
+        }
+        stage('Repo details') {
+            steps {
+                echo "Repository name: ${jslGit.getRemoteRepoName()}"
+                echo "Repository owner: ${jslGit.getRemoteRepoOwner()}"
             }
         }
     }

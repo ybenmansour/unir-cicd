@@ -14,8 +14,8 @@ pipeline {
 
     environment {
         AN_ACCESS_KEY = credentials('my-predefined-secret-text')
-        PULL_REQUEST="pr-${env.CHANGE_ID}"
-        IMAGE_TAG =  "${env.PULL_REQUEST}"
+        PULL_REQUEST = "pr-${env.CHANGE_ID}"
+        IMAGE_TAG = "${env.PULL_REQUEST}"
     }
 
     stages {
@@ -44,7 +44,7 @@ pipeline {
                         }
                     }
                 }
-                stage('DevSecOps'){
+                stage('DevSecOps Static'){
                     steps {
                         echo "<run devsecops tests>"
                     }
@@ -54,12 +54,13 @@ pipeline {
 
         stage('Build') {
             agent {
-                dockerfile {
+                docker {
                     image 'node:15.1.0-alpine3.10'
                     label 'docker'
                 }
             }
             steps {
+                sh "npm install"
                 sh "npm run build"
                 stash name: "DIST", includes: "dist/**"
                 stash name: "NODE_MODULES", includes: "node_modules/**"
@@ -72,7 +73,6 @@ pipeline {
             parallel {
                 stage('Unit Tests') {
                     steps {
-                        unstash name: "DIST"
                         unstash name: "NODE_MODULES"
                         sh "npm run test:unit"
                         junit 'tests/unit/reports/*.xml'
@@ -106,10 +106,16 @@ pipeline {
                 sh "docker build -t app:${env.GIT_COMMIT} ."
                 sh "docker push app:${env.GIT_COMMIT}"
                 script {
-                    withCredentials([file(credentialsId: "K8S_CREDENTIALS", variable: 'KUBBECTL_CONFIG_FILE')]) {
-                        sh "kubectl apply --kubeconfig ${KUBBECTL_CONFIG_FILE} -f deploy/template.yaml"
+                    withCredentials([file(credentialsId: "K8S_CREDENTIALS", variable: 'KUBECTL_CONFIG_FILE')]) {
+                        sh "kubectl apply --kubeconfig ${KUBECTL_CONFIG_FILE} -f deploy/template.yaml"
                     }
                 }
+            }
+        }
+
+        stage('DevSecOps Deploy'){
+            steps {
+                echo "<run devsecops tests>"
             }
         }
 

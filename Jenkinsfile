@@ -12,6 +12,12 @@ pipeline {
                 sh 'make build'
             }
         }
+        stage('Unit tests') {
+            steps {
+                sh 'make test-unit'
+                archiveArtifacts artifacts: 'results/*.xml'
+            }
+        }
     }
     post {
         always {

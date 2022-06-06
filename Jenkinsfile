@@ -34,8 +34,5 @@ pipeline {
             subject: "Failure Job",
             body: "Error ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} "
         }
-        always {
-           
-        }
     }
 }

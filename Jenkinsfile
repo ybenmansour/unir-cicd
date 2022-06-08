@@ -35,10 +35,7 @@ pipeline {
         always {
             junit 'results/*_result.xml'
             cleanWs()
-            echo 'Sending email'
-            mail to: "youssefbenmansour@gmail.com",
-            subject: "Failure Job",
-            body: "Error ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} "
+            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
         }
     }
 }

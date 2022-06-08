@@ -1,4 +1,4 @@
-Prueba ejecución Pipeline al hacer commit
+Prueba ejecución automatizada Pipeline al hacer commit
 
 
 

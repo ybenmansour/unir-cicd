@@ -38,10 +38,10 @@ pipeline {
             echo 'Sending email'
             mail to: "youssefbenmansour@gmail.com",
             subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
-            body: '${currentBuild.currentResult}: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER}'
+            body: "${currentBuild.currentResult}: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER}"
         }
         failure {
-            echo '${currentBuild.currentResult}: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}'
+            echo "${currentBuild.currentResult}: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 }

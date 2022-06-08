@@ -35,12 +35,13 @@ pipeline {
         always {
             junit 'results/*_result.xml'
             cleanWs()
-            emailext recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
-            to: 'youssefbenmansour@gmail.com',
-            attachLog: true,
-            body: 'Error ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} ', 
-            compressLog: true,
-            subject: 'Test'
+            echo 'Sending email'
+            mail to: "youssefbenmansour@gmail.com",
+            subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
+            body: '${currentBuild.currentResult}: ${env.JOB_NAME} Build Number: ${env.BUILD_NUMBER}'
+        }
+        failure {
+            echo '${currentBuild.currentResult}: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}'
         }
     }
 }

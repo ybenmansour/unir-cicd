@@ -35,8 +35,7 @@ pipeline {
         always {
             junit 'results/*_result.xml'
             cleanWs()
-            emailext body: 'A Test EMail', 
-            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
+            emailext recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
             to: 'youssefbenmansour@gmail.com',
             attachLog: true,
             body: 'Error ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} ', 

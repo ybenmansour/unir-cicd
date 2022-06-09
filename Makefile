@@ -33,13 +33,7 @@ test-e2e:
 	docker rm --force e2e-tests || true
 	docker run -d --network calc-test-e2e --env PYTHONPATH=/opt/calc --name apiserver --env FLASK_APP=app/api.py -p 5000:5000 -w /opt/calc calculator-app:latest flask run --host=0.0.0.0
 	docker run -d --network calc-test-e2e --name calc-web -p 80:80 calc-web
-	docker create --network calc-test-e2e --name e2e-tests cypress/included:4.9.0 --browser chrome || true
-	DOCKER_ID="$(shell docker ps -aqf \"name=e2e-tests\")"; echo $$DOCKER_ID
-	FILES="$(shell ls)"; echo $$FILES
-	DOCKER2_ID=$(docker ps -aqf "name=e2e-tests"); echo $$DOCKER2_ID
-	DOCKER4_ID="docker ps -aqf \"name=e2e-tests\"" ; echo $(shell $$DOCKER4_ID)
-	docker start -a $(shell docker ps -aqf \"name=e2e-tests\") || true
-	docker exec e2e-tests /bin/bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
+	docker create --network calc-test-e2e --name e2e-tests cypress/included:4.9.0 --browser chrome || true && docker exec e2e-tests /bin/bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
 	docker cp ./test/e2e/cypress.json e2e-tests:/cypress.json
 	docker cp ./test/e2e/cypress e2e-tests:/cypress
 	docker start -a e2e-tests || true

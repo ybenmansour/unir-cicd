@@ -37,6 +37,7 @@ test-e2e:
 	@echo $(shell ls -la)
 	@echo $(docker ps -aqf "name=e2e-tests")
 	docker start -a $(docker ps -aqf "name=e2e-tests") || true
+	@DOCKER_ID=$(docker ps -aqf "name=e2e-tests"); \ echo "$DOCKER_ID"
 	docker exec e2e-tests /bin/bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
 	docker cp ./test/e2e/cypress.json e2e-tests:/cypress.json
 	docker cp ./test/e2e/cypress e2e-tests:/cypress

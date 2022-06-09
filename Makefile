@@ -36,7 +36,8 @@ test-e2e:
 	docker create --network calc-test-e2e --name e2e-tests cypress/included:4.9.0 --browser chrome || true
 	DOCKER_ID="$(shell docker ps -aqf \"name=e2e-tests\")"; echo $$DOCKER_ID
 	FILES="$(shell ls)"; echo $$FILES
-	DOCKER2_ID="$(docker ps -aqf \"name=e2e-tests\")"; echo $$DOCKER2_ID
+	DOCKER2_ID=$(docker ps -aqf "name=e2e-tests"); echo $$DOCKER2_ID
+	DOCKER2_ID=$(shell expr $(docker ps -aqf "name=e2e-tests")); echo $$DOCKER2_ID
 	docker start -a $(shell docker ps -aqf \"name=e2e-tests\") || true
 	docker exec e2e-tests /bin/bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
 	docker cp ./test/e2e/cypress.json e2e-tests:/cypress.json

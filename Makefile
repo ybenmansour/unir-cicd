@@ -37,7 +37,7 @@ test-e2e:
 	var=$(docker ps -aqf "name=e2e-tests")
 	echo $var
 	docker start -a $var || true
-	docker exec e2e-tests bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
+	docker exec -it e2e-tests /bin/bash -c "junit2html results/cypress_result.xml results/cypress_result.html"
 	docker cp ./test/e2e/cypress.json e2e-tests:/cypress.json
 	docker cp ./test/e2e/cypress e2e-tests:/cypress
 	docker start -a e2e-tests || true

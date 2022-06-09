@@ -35,6 +35,8 @@ test-e2e:
 	docker run -d --network calc-test-e2e --name calc-web -p 80:80 calc-web
 	docker create --network calc-test-e2e --name e2e-tests cypress/included:4.9.0 --browser chrome || true
 	DOCKER_ID="$(shell docker ps -aqf \"name=e2e-tests\")" && echo $$DOCKER_ID
+	FILES="$(shell ls)"; echo $$FILES
+	@BASE_MOD_TIME="$$( expr $docker ps -aqf \"name=e2e-tests\")"; \ echo "$$BASE_MOD_TIME"
 	@echo docker_id $(shell docker ps -aqf \"name=e2e-tests\")
 	@echo $(shell docker ps -aqf \"name=e2e-tests\")
 	docker start -a $(shell docker ps -aqf \"name=e2e-tests\") || true

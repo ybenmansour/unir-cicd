@@ -30,7 +30,6 @@ pipeline {
             steps {
                 sh 'make test-e2e'
                 archiveArtifacts artifacts: 'results/*.xml'
-                archiveArtifacts artifacts: 'results/*.html'
             }
         }
     }

@@ -36,7 +36,6 @@ pipeline {
     post {
         always {
             junit 'results/*_result.xml'
-	    junit 'results/*_result.html'
             cleanWs()
             echo 'Sending email'
             mail to: "youssefbenmansour@gmail.com",
